@@ -1,0 +1,6 @@
+.DS_Store
+.ipynb_checkpoints
+be.txt
+cc.be.300.vec
+sentences.txt
+word2vec-100-bel-cc100.model*
