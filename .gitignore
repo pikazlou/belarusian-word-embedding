@@ -4,5 +4,6 @@ be.txt*
 GrammarDB*
 cc.be.300.vec
 processed-corpus.txt
-word2vec-100-bel-cc100.model*
-word-vectors.txt
+word2vec-100-bel-cc100.model
+word2vec-100-bel-cc100.vectors
+removed-words.txt
