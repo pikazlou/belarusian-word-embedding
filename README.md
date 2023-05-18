@@ -10,3 +10,11 @@ Code used to train word embeddings for belarusian words
 ## Usage
 
 Conda is used for working env, use `conda-requirements.txt` file to have appropriate packages.
+
+## Analysis
+
+Script to count most frequent words which were filtered out due to mismatch with vocabulary
+
+```
+cat removed-words.txt | sed 's/ /\n/g' | sort | uniq -c | sort -rn > removed-words-count.txt
+```
