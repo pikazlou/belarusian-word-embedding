@@ -1,0 +1,9 @@
+# tsne for visualization
+# plotly for interactivity https://towardsdatascience.com/how-to-train-a-word2vec-model-from-scratch-with-gensim-c457d587e031
+# save filtered out wods into separat file to verify
+# dont explicitly list stop words
+# prepare assessment data (50 words with 10 most similar wods for them)
+# remove words after training
+# increase corpus
+# increase dimensionality
+# merge е/ё , e.g. пачуцце/пачуццё
