@@ -2,8 +2,9 @@
 Code used to train word embeddings for belarusian words
 
 ## Files
+`preprocess-text.ipynb` - run this notebook to fetch and process belarusian corpus from Common Crawl
 
-`belarus-word-embeddings.ipynb` - this is the main file where embeddings are trained
+`belarus-word-embeddings.ipynb` - this is the main file where embeddings are trained based on result of `preprocess-text.ipynb`
 
 `pretrained-embeddings-fasttext.ipynb` - this is an attempt to use pretrained FastText vectors available here https://fasttext.cc/docs/en/crawl-vectors.html
 
