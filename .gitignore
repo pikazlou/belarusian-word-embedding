@@ -6,5 +6,7 @@ cc.be.300.vec
 processed-corpus.txt
 word2vec-cc100-cbow-d100-w3-min10.model
 word2vec-cc100-cbow-d100-w3-min10.vectors
+word2vec-cc100-skipgram-d100-w3-min10.model
+word2vec-cc100-skipgram-d100-w3-min10.vectors
 removed-words.txt
 removed-words-count.txt
