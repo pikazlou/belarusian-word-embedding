@@ -8,6 +8,8 @@ word2vec-cc100-cbow-d100-w3-min10.model
 word2vec-cc100-cbow-d100-w3-min10.vectors
 word2vec-cc100-skipgram-d100-w3-min10.model
 word2vec-cc100-skipgram-d100-w3-min10.vectors
+word2vec-cc100-cbow-d200-w3-min10.model*
+word2vec-cc100-cbow-d200-w3-min10.vectors
 fasttext-cc100-d100-w3-min10.model*
 fasttext-cc100-d100-w3-min10.vectors
 glove/cooccurrence*
