@@ -25,7 +25,7 @@ def load_dataset(path) -> List[tuple[List[str], str]]:
     return result
 
 
-def compute_accuracy(sim_fun):
+def compute_accuracy(sim_fun, log_failed_cases=True):
     dataset = load_dataset('evaluation/outlier-detection')
     similarities = {}
     correct_guesses = 0
@@ -42,7 +42,7 @@ def compute_accuracy(sim_fun):
         least_compact = sorted(compactness.items(), key=operator.itemgetter(1))[0][0]
         if least_compact == outlier:
             correct_guesses += 1
-        else:
+        elif log_failed_cases:
             print(f"Failed {cluster} / {outlier}")
         total_guesses += 1
     return correct_guesses / total_guesses

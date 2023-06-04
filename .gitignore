@@ -1,5 +1,6 @@
 .DS_Store
 .ipynb_checkpoints
+__pycache__
 be.txt*
 GrammarDB*
 cc.be.300.vec
@@ -17,3 +18,5 @@ glove/vectors.txt
 glove/vocab.txt
 removed-words.txt
 removed-words-count.txt
+word_map.txt
+tsbm.dsl*
