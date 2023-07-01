@@ -1,0 +1,26 @@
+1. Install Anaconda (use up-to-date URL from download page)
+curl -O https://repo.anaconda.com/archive/Anaconda3-2023.03-1-Linux-aarch64.sh
+bash Anaconda3-2023.03-1-Linux-aarch64.sh
+(say yes to accept conda init)
+
+2. create conda env with required packages and activate
+conda config --add channels conda-forge
+conda config --set channel_priority strict
+conda create --name belarusian-words-embedding python=3.11 gensim=4.3.1 numpy=1.24 matplotlib=3.7 jupyter
+conda activate belarusian-words-embedding
+
+3. create password for jupyter web access
+python
+>>> from notebook.auth import passwd
+>>> passwd()
+
+4. config jupyter
+jupyter notebook --generate-config
+vim .jupyter/jupyter_notebook_config.py
+#add to the start of the file
+```
+conf = get_config()
+
+conf.NotebookApp.ip = '0.0.0.0'
+conf.NotebookApp.password = u'YOUR PASSWORD HASH'
+conf.NotebookApp.port = 8888
