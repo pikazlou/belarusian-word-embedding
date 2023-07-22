@@ -12,6 +12,12 @@ Code used to train word embeddings for belarusian words
 
 Conda is used for working env, use `conda-requirements.txt` file to have appropriate packages.
 
+To use default set up just follow next steps, otherwise customize the code behind each step. Note, running steps 1 and 2 in default set up will take a lot of time!
+
+1. Run `preprocessing.py` to download corpus and grammar and preprocess sentences
+2. Run `train.py` to train different kind of models (comment out those you don't want)
+3. Run `evaluation.ipynb` in notebook to evaluate trained models
+
 ## Analysis
 
 Script to count most frequent words which were filtered out due to mismatch with vocabulary
