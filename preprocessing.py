@@ -17,8 +17,12 @@ logger = logging.getLogger()
 logger.info("Logging initialized")
 
 
+def exists_nonempty_file(filename):
+    return os.path.exists(filename) and os.path.getsize(filename) > 0
+
+
 def corpus_downloaded():
-    return os.path.exists('be.txt') and os.path.getsize('be.txt') > 0
+    return exists_nonempty_file('be.txt')
 
 
 def download_corpus():
@@ -31,7 +35,7 @@ def download_corpus():
 
 
 def grammar_downloaded():
-    return os.path.exists('GrammarDB-master/N3.xml') and os.path.getsize('GrammarDB-master/N3.xml') > 0
+    return exists_nonempty_file('GrammarDB-master/N3.xml')
 
 
 def download_grammar():
@@ -233,7 +237,7 @@ def remove_short_lines(iterable):
             yield i
 
 
-def process_corpus(word_map_filename, processed_filename, removed_words_filename):
+def process_corpus(word_map_filename, processed_filename, removed_words_filename, split_sent):
     with open(word_map_filename) as f:
         word_map = json.load(f)
 
@@ -241,35 +245,44 @@ def process_corpus(word_map_filename, processed_filename, removed_words_filename
         with open(processed_filename, 'w') as sentences_file:
             with open(removed_words_filename, 'w') as removed_words_file:
                 removed_words = []
-                for s in remove_short_lines(
-                        preprocess_sentences(
-                            split_sentences(
-                                lower_and_replace_characters(
-                                    strip_trailing_newline(original_file)
-                                )
-                            ),
-                            DERIVED_FORM_BLACKLIST,
-                            word_map,
-                            removed_words
-                        )
-                ):
+                lines = strip_trailing_newline(original_file)
+                lines = lower_and_replace_characters(lines)
+                if split_sent:
+                    lines = split_sentences(lines)
+                lines = preprocess_sentences(lines, DERIVED_FORM_BLACKLIST, word_map, removed_words)
+                lines = remove_short_lines(lines)
+                for s in lines:
                     sentences_file.write(s + "\n")
                     removed_words_file.write(' '.join(removed_words) + "\n")
                     removed_words.clear()
 
 
-def run_preprocessing(word_mapping_filename='word_map.json',
-                      processed_filename='processed-corpus.txt',
-                      removed_words_filename='removed-words.txt',
-                      verbs=True,
-                      adjectives=True):
+def run_preprocessing(word_mapping_filename,
+                      processed_filename,
+                      removed_words_filename,
+                      verbs,
+                      adjectives,
+                      split_sent):
+
+    if exists_nonempty_file(word_mapping_filename) and \
+            exists_nonempty_file(processed_filename) and \
+            exists_nonempty_file(removed_words_filename):
+        logger.info(f'Corpus already preprocessed for mapping "{word_mapping_filename}", '
+                    f'processed corpus "{processed_filename}" and removed words "{removed_words_filename}"')
+        return
+    else:
+        logger.info(f'Processing corpus for mapping "{word_mapping_filename}", '
+                    f'processed corpus "{processed_filename}" and removed words "{removed_words_filename}"')
+
     if not corpus_downloaded():
         download_corpus()
 
     if not grammar_downloaded():
         download_grammar()
-    generate_word_mapping(word_mapping_filename, verbs, adjectives)
-    process_corpus(word_mapping_filename, processed_filename, removed_words_filename)
+
+    if not exists_nonempty_file(word_mapping_filename):
+        generate_word_mapping(word_mapping_filename, verbs, adjectives)
+    process_corpus(word_mapping_filename, processed_filename, removed_words_filename, split_sent)
 
 
 if __name__ == "__main__":
@@ -277,9 +290,18 @@ if __name__ == "__main__":
                       processed_filename='processed-corpus.txt',
                       removed_words_filename='removed-words.txt',
                       verbs=True,
-                      adjectives=True)
+                      adjectives=True,
+                      split_sent=True)
     run_preprocessing(word_mapping_filename='word-map-only-nouns.json',
                       processed_filename='processed-corpus-only-nouns.txt',
                       removed_words_filename='removed-words-only-nouns.txt',
                       verbs=False,
-                      adjectives=False)
+                      adjectives=False,
+                      split_sent=True)
+    run_preprocessing(word_mapping_filename='word-map.json',
+                      processed_filename='processed-corpus-no-sent-split.txt',
+                      removed_words_filename='removed-words-no-sent-split.txt',
+                      verbs=True,
+                      adjectives=True,
+                      split_sent=False)
+

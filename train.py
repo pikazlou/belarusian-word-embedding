@@ -47,7 +47,8 @@ def get_losses(name):
     return result
 
 
-def train(arch, sg, vector_size, window, min_count, ns_exponent, sample, epochs, processed_filename, model_descr=''):
+def train(arch, sg, vector_size, window, min_count, ns_exponent, sample, epochs, processed_filename,
+          negative=5, start_alpha=0.0001, end_alpha=0.00001, model_descr=''):
     """
     :param arch: 'w2v' (for word2vec) or 'ft' (for fasttext)
     :param sg: 0 or 1, same as in gensim
@@ -78,16 +79,16 @@ def train(arch, sg, vector_size, window, min_count, ns_exponent, sample, epochs,
     losses = []
     if arch == 'w2v':
         model = Word2Vec(sg=sg, vector_size=vector_size, window=window, min_count=min_count, workers=5,
-                         ns_exponent=ns_exponent, sample=sample)
+                         negative=negative, ns_exponent=ns_exponent, sample=sample)
     elif arch == 'ft':
         model = FastText(sg=sg, vector_size=vector_size, window=window, min_count=min_count, workers=5,
-                         ns_exponent=ns_exponent, sample=sample)
+                         negative=negative, ns_exponent=ns_exponent, sample=sample)
     else:
         raise Exception(f'Unknown architecture: {arch}')
     sentences = LineSentence(processed_filename)
     model.build_vocab(sentences, progress_per=5000000)
     # we override alpha with small values, since default values result in poor train performance
-    model.train(sentences, epochs=epochs, start_alpha=0.0001, end_alpha=0.00001, total_examples=model.corpus_count,
+    model.train(sentences, epochs=epochs, start_alpha=start_alpha, end_alpha=end_alpha, total_examples=model.corpus_count,
                 total_words=model.corpus_total_words, compute_loss=True, report_delay=300,
                 callbacks=[Callback(losses)])
 
@@ -130,6 +131,21 @@ if __name__ == "__main__":
           processed_filename='processed-corpus.txt')
     train(arch='w2v', sg=0, vector_size=100, window=4, min_count=100, ns_exponent=0, sample=10000, epochs=200,
           processed_filename='processed-corpus.txt')
-
-
-
+    train(arch='w2v', sg=0, vector_size=100, window=4, min_count=100, ns_exponent=0, sample=10000, epochs=200,
+          processed_filename='processed-corpus-no-sent-split.txt', model_descr='no_sent_split')
+    train(arch='w2v', sg=0, vector_size=100, window=5, min_count=100, ns_exponent=0, sample=10000, epochs=200,
+          processed_filename='processed-corpus-no-sent-split.txt', model_descr='no_sent_split')
+    train(arch='w2v', sg=0, vector_size=100, window=3, min_count=100, ns_exponent=0, sample=10000, epochs=200,
+          negative=10, processed_filename='processed-corpus.txt', model_descr='negative_10')
+    train(arch='w2v', sg=0, vector_size=100, window=3, min_count=100, ns_exponent=0, sample=10000, epochs=200,
+          negative=15, processed_filename='processed-corpus.txt', model_descr='negative_15')
+    train(arch='w2v', sg=0, vector_size=100, window=3, min_count=100, ns_exponent=0, sample=10000, epochs=200,
+          negative=20, processed_filename='processed-corpus.txt', model_descr='negative_20')
+    train(arch='w2v', sg=0, vector_size=100, window=3, min_count=100, ns_exponent=0, sample=10000, epochs=200,
+          start_alpha=0.00001, end_alpha=0.000001, processed_filename='processed-corpus.txt', model_descr='smaller_alpha')
+    train(arch='w2v', sg=0, vector_size=100, window=3, min_count=100, ns_exponent=0, sample=10000, epochs=200,
+          start_alpha=0.001, end_alpha=0.000001, processed_filename='processed-corpus.txt', model_descr='steeper_alpha')
+    train(arch='w2v', sg=0, vector_size=100, window=3, min_count=100, ns_exponent=0, sample=10000, epochs=200,
+          start_alpha=0.01, end_alpha=0.0000001, processed_filename='processed-corpus.txt', model_descr='xsteeper_alpha')
+    train(arch='w2v', sg=0, vector_size=100, window=3, min_count=100, ns_exponent=0, sample=10000, epochs=500,
+          start_alpha=0.01, end_alpha=0.0000001, processed_filename='processed-corpus.txt', model_descr='xsteeper_alpha')
